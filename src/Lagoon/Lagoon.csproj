@@ -1,18 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net50</TargetFramework>
     <AssemblyName>Lagoon</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
-
     <!-- Nuget properties -->
     <Description>An implementation of an object pool</Description>
   </PropertyGroup>
-
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>ObjectPool.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
