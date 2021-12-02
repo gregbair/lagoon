@@ -220,7 +220,7 @@ namespace Lagoon.Tests
 
             Func<Task> act = async () => await sut.GetObjectAsync();
 
-            act.Should().ThrowExactly<PoolExhaustedException>();
+            await act.Should().ThrowExactlyAsync<PoolExhaustedException>();
         }
 
         [Fact]
