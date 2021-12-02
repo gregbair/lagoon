@@ -15,6 +15,7 @@ jobs:
       with:
         dotnet-version: 6.0.100
     - name: Pack
+      run: dotnet tool restore -v n
       run: dotnet pack --version-suffix "beta.`date -u +%Y%m%d%H%M%S`" -o .
     - name: Push to nuget.org
       run: dotnet nuget push Lagoon.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
