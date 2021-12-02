@@ -24,4 +24,4 @@ jobs:
     - name: Test
       run: dotnet test --no-restore -v n
     - name: Run benchmarks
-      run: dotnet run -c release -p benchmarks/Lagoon.Benchmarks/Lagoon.Benchmarks.csproj
+      run: dotnet run -c release --project benchmarks/Lagoon.Benchmarks/Lagoon.Benchmarks.csproj

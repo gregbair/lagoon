@@ -18,5 +18,3 @@ jobs:
       run: dotnet pack --version-suffix "beta.`date -u +%Y%m%d%H%M%S`" -o .
     - name: Push to nuget.org
       run: dotnet nuget push Lagoon.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
-    - name: Push to nuget.org
-      run: dotnet nuget push Lagoon.DependencyInjection.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
