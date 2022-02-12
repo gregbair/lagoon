@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +30,8 @@ namespace Lagoon
         private readonly CancellationTokenSource _backgroundTokenSource = new CancellationTokenSource();
 
         private readonly Timer _pruneTimer;
+
+        private readonly Timer _growTimer;
 
         private bool _isDisposed;
 
@@ -60,8 +61,8 @@ namespace Lagoon
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _options = options ?? new ObjectPoolOptions();
 
-            _pruneTimer = new (Prune, null, TimeSpan.Zero, _options.SweepFrequency);
-            Task.Run(() => BackgroundGrowAsync(_backgroundTokenSource.Token));
+            _pruneTimer = new Timer(Prune, null, TimeSpan.Zero, _options.SweepFrequency);
+            _growTimer = new Timer(Grow, null, TimeSpan.Zero, _options.SweepFrequency);
         }
 
         /// <param name="token"></param>
@@ -87,7 +88,7 @@ namespace Lagoon
             return wrapper.Proxy;
         }
 
-        private async Task<PooledObjectWrapper<TObject>> CreateObject(CancellationToken token)
+        private async Task<PooledObjectWrapper<TObject>> CreateObject(CancellationToken token = default)
         {
             TObject? obj;
             try
@@ -115,16 +116,6 @@ namespace Lagoon
             return wrapper;
         }
 
-        private async Task BackgroundGrowAsync(CancellationToken token = default)
-        {
-            var frequency = _options.SweepFrequency;
-            while (!token.IsCancellationRequested)
-            {
-                await GrowAsync(_options.MinObjects, token).ConfigureAwait(false);
-                await Task.Delay(frequency, token).ConfigureAwait(false);
-            }
-        }
-
         private void Prune(object? state)
         {
             var currentSize = _active.Count + _available.Count;
@@ -149,15 +140,21 @@ namespace Lagoon
             }
         }
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000", Justification = "Object is disposed when appropraite")]
-        private async Task GrowAsync(int size, CancellationToken token = default)
+        private void Grow(object? state)
+        {
+            _ = GrowAsync(_options.MinObjects);
+        }
+
+        private async Task GrowAsync(int size)
         {
             var count = 0;
             while (_active.Count + _available.Count < size && count < size * 2)
             {
                 try
                 {
-                    var obj = await CreateObject(token).ConfigureAwait(false);
+#pragma warning disable CA2000
+                    var obj = await CreateObject().ConfigureAwait(false);
+#pragma warning restore CA2000
                     _available.Push(obj);
                 }
                 catch (Exception ex)
@@ -236,6 +233,7 @@ namespace Lagoon
                 }
 
                 _pruneTimer.Dispose();
+                _growTimer.Dispose();
                 _backgroundTokenSource.Cancel();
                 _backgroundTokenSource.Dispose();
             }
