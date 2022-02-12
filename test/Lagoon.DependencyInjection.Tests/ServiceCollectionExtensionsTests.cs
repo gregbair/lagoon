@@ -12,7 +12,7 @@ namespace Lagoon.DependencyInjection.Tests
         [Fact]
         public void ThrowsNullServices()
         {
-            Action act =() => ServiceCollectionExtensions.AddObjectPool<SomeClass>(null!);
+            Action act = () => ServiceCollectionExtensions.AddObjectPool<SomeClass>(null!);
             act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("services");
         }
 

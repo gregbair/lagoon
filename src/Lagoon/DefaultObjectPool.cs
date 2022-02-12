@@ -1,4 +1,4 @@
-﻿// Copyright (c) Greg Bair. All rights reserved.
+// Copyright (c) Greg Bair. All rights reserved.
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
 using System;

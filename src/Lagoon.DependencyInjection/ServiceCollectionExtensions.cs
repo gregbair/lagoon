@@ -1,11 +1,11 @@
-﻿// Copyright (c) Greg Bair. All rights reserved.
+// Copyright (c) Greg Bair. All rights reserved.
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
-[assembly:CLSCompliant(true)]
+[assembly: CLSCompliant(true)]
 
 namespace Lagoon.DependencyInjection
 {

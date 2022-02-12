@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -59,7 +59,7 @@ namespace Lagoon.Tests
 
         public interface ISomeInterface : IDisposable
         {
-            public void Foo(){}
+            public void Foo() { }
         }
     }
 }

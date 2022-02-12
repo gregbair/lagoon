@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly:CLSCompliant(true)]
+[assembly: CLSCompliant(true)]
 
 namespace Lagoon
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -89,7 +89,7 @@ namespace Lagoon.Tests
 
             var source = new CancellationTokenSource();
             source.Cancel();
-            Func<Task> act = async () =>  await sut.GetObjectAsync(source.Token);
+            Func<Task> act = async () => await sut.GetObjectAsync(source.Token);
             await act.Should().ThrowAsync<OperationCanceledException>();
         }
 
