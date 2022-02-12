@@ -21,13 +21,11 @@ namespace Lagoon
 
         private readonly ObjectPoolOptions _options;
 
-        private readonly ConcurrentStack<PooledObjectWrapper<TObject>> _available =
-            new ConcurrentStack<PooledObjectWrapper<TObject>>();
+        private readonly ConcurrentStack<PooledObjectWrapper<TObject>> _available = new ();
 
-        private readonly ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>> _active =
-            new ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>>();
+        private readonly ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>> _active = new ();
 
-        private readonly CancellationTokenSource _backgroundTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _backgroundTokenSource = new ();
 
         private readonly Timer _pruneTimer;
 
@@ -65,7 +63,6 @@ namespace Lagoon
             _growTimer = new Timer(Grow, null, TimeSpan.Zero, _options.SweepFrequency);
         }
 
-        /// <param name="token"></param>
         /// <inheritdoc/>
         public async Task<TObject> GetObjectAsync(CancellationToken token = default)
         {
