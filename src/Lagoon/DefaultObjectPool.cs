@@ -30,6 +30,8 @@ namespace Lagoon
 
         private readonly CancellationTokenSource _backgroundTokenSource = new CancellationTokenSource();
 
+        private readonly Timer _pruneTimer;
+
         private bool _isDisposed;
 
         /// <inheritdoc />
@@ -58,7 +60,7 @@ namespace Lagoon
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _options = options ?? new ObjectPoolOptions();
 
-            Task.Run(() => BackgroundPruneAsync(_backgroundTokenSource.Token));
+            _pruneTimer = new (Prune, null, TimeSpan.Zero, _options.SweepFrequency);
             Task.Run(() => BackgroundGrowAsync(_backgroundTokenSource.Token));
         }
 
@@ -113,16 +115,6 @@ namespace Lagoon
             return wrapper;
         }
 
-        private async Task BackgroundPruneAsync(CancellationToken token = default)
-        {
-            var frequency = _options.SweepFrequency;
-            while (!token.IsCancellationRequested)
-            {
-                PruneAsync();
-                await Task.Delay(frequency, token).ConfigureAwait(false);
-            }
-        }
-
         private async Task BackgroundGrowAsync(CancellationToken token = default)
         {
             var frequency = _options.SweepFrequency;
@@ -133,7 +125,7 @@ namespace Lagoon
             }
         }
 
-        private void PruneAsync()
+        private void Prune(object? state)
         {
             var currentSize = _active.Count + _available.Count;
             var minPoolSize = _options.MinObjects;
@@ -243,6 +235,7 @@ namespace Lagoon
                     }
                 }
 
+                _pruneTimer.Dispose();
                 _backgroundTokenSource.Cancel();
                 _backgroundTokenSource.Dispose();
             }
