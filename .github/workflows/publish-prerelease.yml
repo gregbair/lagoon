@@ -14,8 +14,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.100
-    - name: Install Paket
-      run: dotnet tool restore -v n
     - name: Pack
       run: dotnet pack --version-suffix "beta.`date -u +%Y%m%d%H%M%S`" -o .
     - name: Push to nuget.org
