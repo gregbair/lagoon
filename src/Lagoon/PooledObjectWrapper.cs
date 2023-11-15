@@ -35,8 +35,10 @@ namespace Lagoon
         /// <param name="actual">The object to be wrapped.</param>
         public PooledObjectWrapper(IObjectPool<TObject> pool, TObject actual)
         {
-            _actual = actual ?? throw new ArgumentNullException(nameof(actual));
-            _pool = pool ?? throw new ArgumentNullException(nameof(pool));
+            ArgumentNullException.ThrowIfNull(actual);
+            ArgumentNullException.ThrowIfNull(pool);
+            _actual = actual;
+            _pool = pool;
             var proxy = Generator.CreateInterfaceProxyWithTarget(actual, this);
             Proxy = proxy;
             Id = Guid.NewGuid();
@@ -45,10 +47,7 @@ namespace Lagoon
         /// <inheritdoc />
         public void Intercept(IInvocation invocation)
         {
-            if (invocation is null)
-            {
-                throw new ArgumentNullException(nameof(invocation));
-            }
+            ArgumentNullException.ThrowIfNull(invocation);
 
             if (!invocation.Method.Name.Equals("Dispose", StringComparison.OrdinalIgnoreCase))
             {
