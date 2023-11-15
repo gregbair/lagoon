@@ -118,7 +118,7 @@ namespace Lagoon
             var currentSize = _active.Count + _available.Count;
             var minPoolSize = _options.MinObjects;
 
-            if (currentSize <= minPoolSize || !_available.Any())
+            if (currentSize <= minPoolSize || _available.IsEmpty)
             {
                 return;
             }
@@ -185,10 +185,7 @@ namespace Lagoon
         /// <inheritdoc/>
         public void ReturnObject(PooledObjectWrapper<TObject> wrapper)
         {
-            if (wrapper is null)
-            {
-                throw new ArgumentNullException(nameof(wrapper));
-            }
+            ArgumentNullException.ThrowIfNull(wrapper);
 
             if (_active.TryGetValue(wrapper.Id, out var proxy) && _active.TryRemove(proxy.Id, out _))
             {

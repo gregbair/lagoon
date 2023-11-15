@@ -31,10 +31,7 @@ namespace Lagoon.DependencyInjection
             Func<TObject, bool>? objectPassivator = null)
             where TObject : class, IDisposable
         {
-            if (services is null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
+            ArgumentNullException.ThrowIfNull(services);
 
             var options = new ObjectPoolOptions();
             optionsAction?.Invoke(options);
